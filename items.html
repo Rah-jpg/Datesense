@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DateSense - View Items</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --accent: #4cc9f0;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --success: #4caf50;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--light);
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--dark);
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    /* Header Styles */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    /* Dashboard Card */
+    .dashboard-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card-title i {
+      color: var(--primary);
+    }
+    
+    /* Items Table */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .items-table th, 
+    .items-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .items-table th {
+      background-color: #f5f7fa;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .items-table tr:hover {
+      background-color: #f9fafc;
+    }
+    
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+    
+    .status-expired {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--danger);
+    }
+    
+    .status-warning {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: var(--warning);
+    }
+    
+    .status-safe {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--success);
+    }
+    
+    /* Button Styles */
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #3a56d4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+    }
+    
+    /* Action Buttons */
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    /* Floating Background Elements */
+    .floating-bg {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .floating-element {
+      position: absolute;
+      background: linear-gradient(45deg, rgba(67, 97, 238, 0.08), rgba(76, 201, 240, 0.08));
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: float 25s infinite linear;
+      opacity: 0.8;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(50vw, -25vh) rotate(90deg); }
+      50% { transform: translate(100vw, -50vh) rotate(180deg); }
+      75% { transform: translate(50vw, -75vh) rotate(270deg); }
+      100% { transform: translate(0, -100vh) rotate(360deg); }
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .items-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">DateSense</div>
+      <div class="user-info">
+        <div class="user-avatar" id="userInitial">U</div>
+        <button class="btn btn-primary" id="backBtn">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+      </div>
+    </div>
+    
+    <!-- Items List -->
+    <div class="dashboard-card">
+      <h2 class="card-title">
+        <i class="fas fa-boxes"></i> Your Items
+      </h2>
+      
+      <div class="table-responsive">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+              <th>Days Left</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="itemsList">
+            <!-- Items will be loaded here -->
+            <tr>
+              <td colspan="6" style="text-align: center;">Loading items...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Floating Background Elements -->
+  <div class="floating-bg" id="floatingBg"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <script>
+    // Firebase Config (Same as index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCkC8LkT-O43VhMefLS5ccFDFcCoAg2O2Y",
+      authDomain: "datesense-ea1af.firebaseapp.com",
+      projectId: "datesense-ea1af",
+      storageBucket: "datesense-ea1af.appspot.com",
+      messagingSenderId: "626408741492",
+      appId: "1:626408741492:web:4d9f51bfcef42068d60f21"
+    };
+    
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // DOM Elements
+    const userInitial = document.getElementById('userInitial');
+    const backBtn = document.getElementById('backBtn');
+    const itemsList = document.getElementById('itemsList');
+    
+    // Check authentication and load data
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        // Set user initial
+        userInitial.textContent = user.email ? user.email.charAt(0).toUpperCase() : 'U';
+        
+        // Load user items
+        loadItems();
+      }
+    });
+    
+    // Load items sorted by expiry date (closest first)
+    async function loadItems() {
+      try {
+        const userId = auth.currentUser.uid;
+        const today = new Date();
+        
+        const querySnapshot = await db.collection('products')
+          .where('userId', '==', userId)
+          .orderBy('expiryDate')
+          .get();
+        
+        if (querySnapshot.empty) {
+          itemsList.innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align: center; color: #666;">
+                No items found. Add some items from the dashboard.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        let html = '';
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const expiryDate = new Date(data.expiryDate);
+          const timeDiff = expiryDate.getTime() - today.getTime();
+          const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          
+          // Determine status
+          let statusClass, statusText;
+          if (daysLeft < 0) {
+            statusClass = 'status-expired';
+            statusText = 'Expired';
+          } else if (daysLeft <= 7) {
+            statusClass = 'status-warning';
+            statusText = 'Expiring Soon';
+          } else {
+            statusClass = 'status-safe';
+            statusText = 'Safe';
+          }
+          
+          // Format date
+          const formattedDate = expiryDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+          
+          html += `
+            <tr data-id="${doc.id}">
+              <td>${data.name}</td>
+              <td>${data.category || 'N/A'}</td>
+              <td>${formattedDate}</td>
+              <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+              <td>${daysLeft < 0 ? 'Expired' : daysLeft}</td>
+              <td>
+                <button class="action-btn btn-danger" onclick="deleteItem('${doc.id}')">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        
+        itemsList.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading items:", error);
+        itemsList.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--danger);">
+              Error loading items. Please try again.
+            </td>
+          </tr>
+        `;
+      }
+    }
+    
+    // Delete Item Function
+    async function deleteItem(itemId) {
+      if (!confirm('Are you sure you want to delete this item?')) {
+        return;
+      }
+      
+      try {
+        await db.collection('products').doc(itemId).delete();
+        
+        // Remove from UI
+        document.querySelector(`tr[data-id="${itemId}"]`).remove();
+        
+        // Show success message
+        showToast('Item deleted successfully!', 'success');
+      } catch (error) {
+        console.error("Error deleting item:", error);
+        showToast("Error deleting item. Please try again.", 'error');
+      }
+    }
+    
+    // Back Button
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+    
+    // Create floating background elements
+    const bgContainer = document.getElementById('floatingBg');
+    for (let i = 0; i < 15; i++) {
+      const element = document.createElement('div');
+      element.classList.add('floating-element');
+      
+      // Random properties
+      const size = Math.random() * 200 + 50;
+      const posX = Math.random() * window.innerWidth;
+      const posY = window.innerHeight + size;
+      const duration = Math.random() * 30 + 20;
+      const delay = Math.random() * 15;
+      const opacity = Math.random() * 0.3 + 0.2;
+      
+      element.style.width = `${size}px`;
+      element.style.height = `${size}px`;
+      element.style.left = `${posX}px`;
+      element.style.top = `${posY}px`;
+      element.style.animationDuration = `${duration}s`;
+      element.style.animationDelay = `${delay}s`;
+      element.style.opacity = opacity;
+      
+      bgContainer.appendChild(element);
+    }
+    
+    // Helper function to show toast messages
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.right = '20px';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = '8px';
+      toast.style.backgroundColor = type === 'error' ? 'var(--danger)' : 
+                                 type === 'success' ? 'var(--success)' : 'var(--primary)';
+      toast.style.color = 'white';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      toast.style.zIndex = '1000';
+      toast.style.transform = 'translateY(30px)';
+      toast.style.opacity = '0';
+      toast.style.transition = 'all 0.3s ease';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+      }, 10);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(30px)';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+    
+    // Make deleteItem function available globally
+    window.deleteItem = deleteItem;
+  </script>
+</body>
+</html>

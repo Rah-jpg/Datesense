@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - DateSense</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --danger: #f44336;
+      --warning: #FF9800;
+      --info: #2196F3;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .auth-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    
+    .auth-container h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+    
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .auth-form input {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    .btn {
+      padding: 0.8rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #45a049;
+    }
+    
+    .auth-link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .auth-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    #registerStatus {
+      margin-top: 1rem;
+      min-height: 20px;
+    }
+    
+    .status-loading {
+      color: var(--info);
+      text-align: center;
+    }
+    
+    .status-success {
+      color: var(--primary);
+      text-align: center;
+    }
+    
+    .status-error {
+      color: var(--danger);
+      text-align: center;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .strength-meter {
+      margin-top: 5px;
+      height: 5px;
+      background: #eee;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    
+    .strength-text {
+      font-size: 12px;
+      margin-top: 2px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Create Account</h2>
+    <form class="auth-form" id="registerForm">
+      <input type="text" id="registerName" placeholder="Full Name" required>
+      <input type="email" id="registerEmail" placeholder="Email" required>
+      <input type="password" id="registerPassword" 
+             placeholder="Password (min 6 chars)" 
+             minlength="6"
+             required
+             oninput="checkPasswordStrength(this.value)">
+      <div id="passwordStrength" class="strength-meter">
+        <div class="strength-bar"></div>
+        <span class="strength-text">Password Strength</span>
+      </div>
+      <button type="submit" class="btn btn-primary" id="registerBtn">
+        Register
+      </button>
+    </form>
+    <div class="auth-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+    <div id="registerStatus"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <!-- App Scripts -->
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCkC8LkT-O43VhMefLS5ccFDFcCoAg2O2Y",
+  authDomain: "datesense-ea1af.firebaseapp.com",
+  projectId: "datesense-ea1af",
+  storageBucket: "datesense-ea1af.firebasestorage.app",
+  messagingSenderId: "626408741492",
+  appId: "1:626408741492:web:4d9f51bfcef42068d60f21",
+  measurementId: "G-YWC6V748S7"
+    };
+    
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Password Strength Checker
+    function checkPasswordStrength(password) {
+      const bar = document.querySelector('.strength-bar');
+      const text = document.querySelector('.strength-text');
+      
+      let strength = 0;
+      if (password.length > 5) strength += 1;
+      if (password.length > 8) strength += 1;
+      if (/[A-Z]/.test(password)) strength += 1;
+      if (/[0-9]/.test(password)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+      
+      const colors = ['#ff4d4d', '#ff9933', '#33cc33', '#0099ff', '#0066ff'];
+      const texts = ['Very Weak', 'Weak', 'Good', 'Strong', 'Very Strong'];
+      
+      bar.style.width = `${strength * 20}%`;
+      bar.style.backgroundColor = colors[strength];
+      text.textContent = texts[strength];
+      text.style.color = colors[strength];
+    }
+
+    // Registration Handler
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const registerBtn = document.getElementById('registerBtn');
+      const statusDiv = document.getElementById('registerStatus');
+      
+      // Get form values
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+      
+      // Validate inputs
+      if (!name || !email || !password) {
+        statusDiv.innerHTML = '<p class="status-error">All fields are required</p>';
+        return;
+      }
+      
+      if (password.length < 6) {
+        statusDiv.innerHTML = '<p class="status-error">Password must be at least 6 characters</p>';
+        return;
+      }
+      
+      // Update UI
+      registerBtn.innerHTML = '<span class="spinner"></span> Registering...';
+      registerBtn.disabled = true;
+      statusDiv.innerHTML = '<p class="status-loading">Creating your account...</p>';
+      
+      try {
+        // 1. Create user in Firebase Auth
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        
+        // 2. Save additional data to Firestore
+        await db.collection('users').doc(userCredential.user.uid).set({
+          name: name,
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // 3. Send email verification (optional)
+        await userCredential.user.sendEmailVerification();
+        
+        // Success message
+        statusDiv.innerHTML = `
+          <p class="status-success">
+            <i class="fas fa-check-circle"></i> Registration successful!
+          </p>
+          <p class="status-info">Verification email sent to ${email}</p>
+        `;
+        
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 3000);
+        
+      } catch (error) {
+        console.error("Registration error:", error);
+        
+        let message = "Registration failed. Please try again.";
+        if (error.code === 'auth/email-already-in-use') {
+          message = "This email is already registered";
+        } else if (error.code === 'auth/weak-password') {
+          message = "Password must be at least 6 characters";
+        } else if (error.code === 'auth/invalid-email') {
+          message = "Please enter a valid email address";
+        }
+        
+        statusDiv.innerHTML = `<p class="status-error">${message}</p>`;
+        
+      } finally {
+        // Reset button state
+        registerBtn.textContent = 'Register';
+        registerBtn.disabled = false;
+      }
+    });
+  </script>
+  
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</body>
+</html>

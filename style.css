@@ -1,0 +1,378 @@
+:root {
+  /* Color Palette */
+  --primary: #4CAF50;
+  --primary-dark: #388E3C;
+  --primary-light: #C8E6C9;
+  --accent: #FFC107;
+  --danger: #F44336;
+  --warning: #FF9800;
+  --info: #2196F3;
+  --dark: #212121;
+  --medium: #757575;
+  --light: #F5F5F5;
+  --white: #FFFFFF;
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: var(--light);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header Styles */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+/* Auth Pages */
+.auth-container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-form input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.auth-form input:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.auth-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Dashboard Styles */
+.add-item {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+}
+
+#itemForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+#itemForm input, 
+#itemForm select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#itemForm button {
+  grid-column: span 2;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 8px 15px;
+  background: #eee;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Item Cards */
+#itemsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.item-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  padding: 15px;
+  position: relative;
+  border-left: 4px solid var(--primary);
+  transition: transform 0.3s;
+}
+
+.item-card:hover {
+  transform: translateY(-5px);
+}
+
+.item-card.expiring {
+  border-left-color: var(--warning);
+  background: #FFF3E0;
+}
+
+.item-card.expired {
+  border-left-color: var(--danger);
+  background: #FFEBEE;
+}
+
+.item-card h3 {
+  margin-bottom: 5px;
+  color: var(--dark);
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.food {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.medicine {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+.cosmetics {
+  background: #F3E5F5;
+  color: #7B1FA2;
+}
+
+.other {
+  background: #E0E0E0;
+  color: var(--dark);
+}
+
+.expiry-date {
+  font-size: 14px;
+  color: var(--medium);
+  margin: 5px 0;
+}
+
+.days-left {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-weight: bold;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.safe {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.warning {
+  background: #FFECB3;
+  color: #FF6F00;
+}
+
+.danger {
+  background: #FFCDD2;
+  color: var(--danger);
+}
+
+.item-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #itemForm {
+    grid-template-columns: 1fr;
+  }
+  
+  #itemForm button {
+    grid-column: span 1;
+  }
+  
+  #itemsContainer {
+    grid-template-columns: 1fr;
+  }
+}
+/* Auth Status Messages */
+.status-info { color: var(--info); }
+.status-success { color: var(--primary); }
+.status-error { color: var(--danger); }
+
+/* Auth Container */
+.auth-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-form input {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-link a {
+  color: var(--primary);
+  text-decoration: none;
+}
+/* Spinner animation */
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Disabled button style */
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* style.css mein add karein */
+.btn.loading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.btn.loading::after {
+  content: "...";
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0%, 20% { content: "."; }
+  40% { content: ".."; }
+  60%, 100% { content: "..."; }
+}

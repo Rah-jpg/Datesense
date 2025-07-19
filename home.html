@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DateSense Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #5a75f1;
+      --accent: #4cc9f0;
+      --dark: #2b2d42;
+      --light: #f8f9fa;
+      --danger: #f44336;
+      --warning: #ff9800;
+      --success: #4caf50;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background-color: var(--light);
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--dark);
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .card-title i {
+      color: var(--primary);
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+    }
+    
+    .btn-secondary {
+      background: var(--accent);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 201, 240, 0.2);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-outline:hover {
+      background: rgba(67, 97, 238, 0.05);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .floating-bg {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .floating-element {
+      position: absolute;
+      background: linear-gradient(45deg, rgba(67, 97, 238, 0.08), rgba(76, 201, 240, 0.08));
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: float 25s infinite linear;
+      opacity: 0.8;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(50vw, -25vh) rotate(90deg); }
+      50% { transform: translate(100vw, -50vh) rotate(180deg); }
+      75% { transform: translate(50vw, -75vh) rotate(270deg); }
+      100% { transform: translate(0, -100vh) rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">DateSense</div>
+      <div class="user-info">
+        <div class="user-avatar" id="userInitial">U</div>
+        <button class="btn btn-outline" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+    
+    <!-- Stats Overview -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value" id="totalItems">0</div>
+        <div class="stat-label">Total Items</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="expiringSoon">0</div>
+        <div class="stat-label">Expiring Soon</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="expiredItems">0</div>
+        <div class="stat-label">Expired Items</div>
+      </div>
+    </div>
+    
+    <!-- Add Item Form -->
+    <div class="dashboard-card">
+      <h2 class="card-title">
+        <i class="fas fa-plus-circle"></i> Add New Item
+      </h2>
+      
+      <form id="itemForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" placeholder="e.g., Milk, Medicine" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="expiryDate">Expiry Date</label>
+            <input type="date" id="expiryDate" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category">
+              <option value="food">Food</option>
+              <option value="medicine">Medicine</option>
+              <option value="cosmetics">Cosmetics</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="notes">Notes (Optional)</label>
+          <input type="text" id="notes" placeholder="Any special instructions">
+        </div>
+        
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Save Item
+          </button>
+          <button type="button" id="viewBtn" class="btn btn-secondary">
+            <i class="fas fa-list"></i> View All Items
+          </button>
+          <button type="reset" class="btn btn-outline">
+            <i class="fas fa-undo"></i> Reset Form
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Recent Items -->
+    <div class="dashboard-card">
+      <h2 class="card-title">
+        <i class="fas fa-clock"></i> Recently Added
+      </h2>
+      <div id="recentItems" style="color: #666; font-style: italic;">
+        Loading recent items...
+      </div>
+    </div>
+  </div>
+  
+  <!-- Floating Background Elements -->
+  <div class="floating-bg" id="floatingBg"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  
+  <script>
+    // Firebase Config (Replace with your actual config)
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCkC8LkT-O43VhMefLS5ccFDFcCoAg2O2Y",
+  authDomain: "datesense-ea1af.firebaseapp.com",
+  projectId: "datesense-ea1af",
+  storageBucket: "datesense-ea1af.firebasestorage.app",
+  messagingSenderId: "626408741492",
+  appId: "1:626408741492:web:4d9f51bfcef42068d60f21",
+  measurementId: "G-YWC6V748S7"
+};
+    
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    
+    // DOM Elements
+    const itemForm = document.getElementById('itemForm');
+    const viewBtn = document.getElementById('viewBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userInitial = document.getElementById('userInitial');
+    const recentItemsEl = document.getElementById('recentItems');
+    const totalItemsEl = document.getElementById('totalItems');
+    const expiringSoonEl = document.getElementById('expiringSoon');
+    const expiredItemsEl = document.getElementById('expiredItems');
+    
+    // Check authentication and load data
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        // Set user initial
+        userInitial.textContent = user.email ? user.email.charAt(0).toUpperCase() : 'U';
+        
+        // Load user data
+        loadStats();
+        loadRecentItems();
+      }
+    });
+    
+    // Load statistics
+    async function loadStats() {
+      try {
+        const userId = auth.currentUser.uid;
+        const today = new Date();
+        const nextWeek = new Date();
+        nextWeek.setDate(today.getDate() + 7);
+        
+        // Total items
+        const totalQuery = await db.collection('products')
+          .where('userId', '==', userId)
+          .get();
+        totalItemsEl.textContent = totalQuery.size;
+        
+        // Expiring soon (within 7 days)
+        const expiringQuery = await db.collection('products')
+          .where('userId', '==', userId)
+          .where('expiryDate', '>=', today.toISOString().split('T')[0])
+          .where('expiryDate', '<=', nextWeek.toISOString().split('T')[0])
+          .get();
+        expiringSoonEl.textContent = expiringQuery.size;
+        
+        // Expired items
+        const expiredQuery = await db.collection('products')
+          .where('userId', '==', userId)
+          .where('expiryDate', '<', today.toISOString().split('T')[0])
+          .get();
+        expiredItemsEl.textContent = expiredQuery.size;
+        
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    }
+    
+    // Load recent items
+    <!-- In your index.html file, replace the loadRecentItems() function with this: -->
+    // Load recent items with proper error handling
+    async function loadRecentItems() {
+      try {
+        const userId = auth.currentUser.uid;
+        const querySnapshot = await db.collection('products')
+          .where('userId', '==', userId)
+          .orderBy('createdAt', 'desc')
+          .limit(5)
+          .get();
+        
+        if (querySnapshot.empty) {
+          recentItemsEl.innerHTML = '<p>No items added yet. Start by adding your first item above.</p>';
+          return;
+        }
+        
+        let html = '<div class="recent-items-list" style="margin-top: 1rem;">';
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const expiryDate = new Date(data.expiryDate);
+          const today = new Date();
+          const timeDiff = expiryDate.getTime() - today.getTime();
+          const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          
+          let statusClass = '';
+          let statusColor = '';
+          if (daysLeft < 0) {
+            statusClass = 'Expired';
+            statusColor = 'var(--danger)';
+          } else if (daysLeft <= 7) {
+            statusClass = 'Expiring Soon';
+            statusColor = 'var(--warning)';
+          } else {
+            statusClass = 'Safe';
+            statusColor = 'var(--success)';
+          }
+          
+          html += `
+            <div class="recent-item" style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <strong style="display: block;">${data.name}</strong>
+                  <small style="color: #666;">Expires: ${expiryDate.toDateString()}</small>
+                </div>
+                <span style="color: ${statusColor}; font-weight: 500;">${statusClass}</span>
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+        
+        recentItemsEl.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading recent items:", error);
+        
+        // Special handling for index errors
+        if (error.code === 'failed-precondition') {
+          recentItemsEl.innerHTML = `
+            <p style="color: var(--warning);">
+              Setting up database... please refresh in 2-3 minutes.
+              <br><small>(Creating required indexes)</small>
+            </p>
+          `;
+        } else {
+          recentItemsEl.innerHTML = `
+            <p style="color: var(--danger);">
+              Error loading items. <a href="javascript:location.reload()" style="color: var(--primary);">Refresh</a> to try again.
+            </p>
+          `;
+        }
+      }
+    }
+    
+   // Add Item Functionality with better error handling
+itemForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const productName = document.getElementById('productName').value.trim();
+  const expiryDate = document.getElementById('expiryDate').value;
+  const category = document.getElementById('category').value;
+  const notes = document.getElementById('notes').value.trim();
+  
+  // Validate inputs
+  if (!productName || !expiryDate) {
+    showToast('Please fill all required fields', 'error');
+    return;
+  }
+  
+  // Get current user
+  const user = auth.currentUser;
+  if (!user) {
+    showToast('You need to login first', 'error');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  try {
+    // Add to Firestore with userId
+    await db.collection('products').add({
+      name: productName,
+      expiryDate: expiryDate,
+      category: category,
+      notes: notes || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      userId: user.uid  // Critical for security rules
+    });
+    
+    // Reset form
+    itemForm.reset();
+    
+    // Show success message
+    showToast('Item added successfully!', 'success');
+    
+    // Refresh data
+    loadStats();
+    loadRecentItems();
+  } catch (error) {
+    console.error("Full error object:", error);
+    showToast("Error adding item. Check console for details.", 'error');
+    
+    // Specific error handling
+    if (error.code === 'permission-denied') {
+      console.error("Firestore permission denied. Check:");
+      console.log("- Are security rules published?");
+      console.log("- Does the document include userId field?");
+      console.log("- Is the user properly authenticated?");
+    }
+  }
+});
+    // View Items Button - Links to items.html
+    viewBtn.addEventListener('click', () => {
+      window.location.href = 'items.html';
+    });
+    
+    // Logout Button
+    logoutBtn.addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      }).catch(error => {
+        console.error("Logout error:", error);
+        showToast("Logout failed. Please try again.", 'error');
+      });
+    });
+    
+    // Create floating background elements
+    const bgContainer = document.getElementById('floatingBg');
+    for (let i = 0; i < 15; i++) {
+      const element = document.createElement('div');
+      element.classList.add('floating-element');
+      
+      // Random properties
+      const size = Math.random() * 200 + 50;
+      const posX = Math.random() * window.innerWidth;
+      const posY = window.innerHeight + size;
+      const duration = Math.random() * 30 + 20;
+      const delay = Math.random() * 15;
+      const opacity = Math.random() * 0.3 + 0.2;
+      
+      element.style.width = `${size}px`;
+      element.style.height = `${size}px`;
+      element.style.left = `${posX}px`;
+      element.style.top = `${posY}px`;
+      element.style.animationDuration = `${duration}s`;
+      element.style.animationDelay = `${delay}s`;
+      element.style.opacity = opacity;
+      
+      bgContainer.appendChild(element);
+    }
+    
+    // Helper function to show toast messages
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.right = '20px';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = '8px';
+      toast.style.backgroundColor = type === 'error' ? 'var(--danger)' : 
+                                 type === 'success' ? 'var(--success)' : 'var(--primary)';
+      toast.style.color = 'white';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      toast.style.zIndex = '1000';
+      toast.style.transform = 'translateY(30px)';
+      toast.style.opacity = '0';
+      toast.style.transition = 'all 0.3s ease';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+      }, 10);
+      
+      setTimeout(() => {
+        toast.style.transform = 'translateY(30px)';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

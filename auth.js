@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         statusDiv.innerHTML = '<p class="status-success">Registration successful! Redirecting...</p>';
-        setTimeout(() => window.location.href = 'index.html', 1500);
+        setTimeout(() => window.location.href = 'home.html', 1500);
       } catch (error) {
         let message = "Registration failed. Please try again.";
         if (error.code === 'auth/email-already-in-use') message = "Email already registered";
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
           loginForm['loginPassword'].value
         );
         statusDiv.innerHTML = '<p class="status-success">Login successful! Redirecting...</p>';
-        setTimeout(() => window.location.href = 'index.html', 1500);
+        setTimeout(() => window.location.href = 'home.html', 1500);
       } catch (error) {
         let message = "Login failed. Please try again.";
         if (error.code === 'auth/wrong-password') message = "Incorrect password";
